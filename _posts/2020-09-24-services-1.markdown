@@ -1,8 +1,0 @@
----
-layout: default
-img: ipad.png
-category: Services
-title: Roofing.
-description: |
----
-  We pride ourselves in offering a prompt, efficient service. We are experianced in the application of built-up felt systems, mastic asphalt finishes, slating and tiling.<br><a href="/#contact">Contact us</a> for a free estimate today.
