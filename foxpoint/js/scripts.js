@@ -1,12 +1,3 @@
-/*!
-* Start Bootstrap - Freelancer v7.0.0 (https://startbootstrap.com/theme/freelancer)
-* Copyright 2013-2021 Start Bootstrap
-* Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-freelancer/blob/master/LICENSE)
-*/
-//
-// Scripts
-// 
-
 window.addEventListener('DOMContentLoaded', event => {
 
     // Navbar shrink function
@@ -51,4 +42,61 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     });
 
+});
+
+$(document).ready(function(){
+    $('#messageButton').click(function(){
+        var name = $('#inputName').val();
+        var email = $('#inputEmail').val();
+        var phone = $('#inputPhone').val();
+        var message = $('#inputMessage').val();
+
+        if(name == "" || email == "" || phone == "" || message == ""){
+            alert("Ensure you have filled out every field on the form. We require your name, email address, phone number and a message!");
+            return;
+        }
+
+        $('.loading-spinner-container').css({"display" : "block"});
+        $('#modalMessageResponse').css({"display" : "none"});
+        var data = new FormData($('#contactForm')[0]);
+        $.ajax({
+            type: 'POST',
+            url: 'https://sonnerrs-bot.herokuapp.com/sendfoxpointmail/',
+            enctype: 'multipart/form-data',
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false
+        })
+            .always(function (data) {
+                $('#contact-divider').css({"display" : "none"});
+                console.log(data);
+                if(data.status == 400){
+                    $('#messageTitle').text("Bad request");
+                    $('#messageBody').text("Please ensure you fill out every field on the form! (refresh to view the form again)");
+                }
+
+                if(data.status == 429){
+                    $('#messageTitle').text("You've been trying to send too many messages!");
+                    $('#messageBody').text("Wait a minute and try again, or give us a phone call instead!");
+                }
+
+                if (data.success) {
+                    $('#contactForm')[0].reset();
+                    $('#messageTitle').text("Your message has been sent!");
+                    $('#messageBody').text("Thanks for sending us a message! We will try to be in contact with you as soon as possible!");
+                } else {
+                    $('#messageTitle').text("Something has gone wrong..");
+                    $('#messageBody').text("Sorry about that, but we had a problem sending your message. Please give us a call instead.");
+                }
+
+                
+                setTimeout(function () {
+                    $('.loading-spinner-container').fadeOut("fast");
+                    $('#contactForm').fadeOut("fast");
+                    $('.contactFormResponse').fadeIn("fast");
+                }, 2000);
+                
+            });
+    });
 });
